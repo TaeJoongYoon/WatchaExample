@@ -43,10 +43,10 @@ final class MovieCell: UICollectionViewCell {
   private let rating = CosmosView(frame: .zero).then {
     $0.rating = 0
     $0.settings.starSize = Metric.starSize
-    $0.settings.updateOnTouch = false
+    $0.settings.updateOnTouch = true
     $0.settings.emptyImage = UIImage(named: "empty-star.png")
     $0.settings.filledImage = UIImage(named: "filled-star.png")
-    $0.settings.fillMode = .precise
+    $0.settings.fillMode = .half
     $0.settings.emptyBorderWidth = 1.0
   }
   
@@ -59,24 +59,10 @@ final class MovieCell: UICollectionViewCell {
     $0.backgroundColor = .lightGray
   }
   
-  // MARK: - UI Metrics
-  
-  private struct UI {
-  }
-  
   // MARK: - Initialize
   
   override init(frame: CGRect) {
     super.init(frame: frame)
-    
-    contentView.translatesAutoresizingMaskIntoConstraints = false
-    
-    NSLayoutConstraint.activate([
-      contentView.leftAnchor.constraint(equalTo: leftAnchor),
-      contentView.rightAnchor.constraint(equalTo: rightAnchor),
-      contentView.topAnchor.constraint(equalTo: topAnchor),
-      contentView.bottomAnchor.constraint(equalTo: bottomAnchor)
-      ])
     
     setupUI()
     setupConstraints()
@@ -152,10 +138,6 @@ final class MovieCell: UICollectionViewCell {
     self.posterImageView.kf.setImage(with: URL(string: movie.poster))
     self.titleLabel.text = movie.title
     self.infoLabel.text = "\(movie.year)ㆍ\(movie.genre)"
-    
-  }
-  
-  func setStar(rating: Double) {
-    self.rating.rating = rating
+    self.rating.rating = movie.rating
   }
 }

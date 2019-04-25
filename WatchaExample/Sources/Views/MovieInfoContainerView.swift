@@ -28,6 +28,7 @@ final class MovieInfoContainerView: UIView {
     let stillcutImageView = UIImageView(frame: .zero)
     stillcutImageView.translatesAutoresizingMaskIntoConstraints = false
     stillcutImageView.contentMode = .scaleAspectFill
+    stillcutImageView.clipsToBounds = true
     
     return stillcutImageView
   }()

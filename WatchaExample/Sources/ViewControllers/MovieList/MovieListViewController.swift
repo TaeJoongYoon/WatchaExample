@@ -24,6 +24,8 @@ final class MovieListViewController: BaseViewController {
     static let lineSpacing: CGFloat = 2
     static let intetItemSpacing: CGFloat = 0
     static let edgeInset: CGFloat = 9
+    static let cellHeight: CGFloat = 150
+    static let cellInset: CGFloat = 20
   }
   
   // MARK: Properties
@@ -47,7 +49,7 @@ final class MovieListViewController: BaseViewController {
     $0.color = .mainColor
   }
   
-  // MARK: Setup UI
+  // MARK: Initialize
   
   init(viewModel: MovieListViewModelType) {
     self.viewModel = viewModel
@@ -58,10 +60,15 @@ final class MovieListViewController: BaseViewController {
     fatalError("init(coder:) has not been implemented")
   }
   
+  // MARK: Setup UI
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     self.title = "WATCHA PLAY".localized
-    self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: self, action: nil)
+    self.navigationItem.backBarButtonItem = UIBarButtonItem(title: "",
+                                                            style: .plain,
+                                                            target: self,
+                                                            action: nil)
     
     self.view.addSubview(self.movieListCollectionView)
     self.view.addSubview(self.indicator)
@@ -95,8 +102,11 @@ final class MovieListViewController: BaseViewController {
       .bind(to: viewModel.inputs.didPulltoRefresh)
       .disposed(by: self.disposeBag)
     
-    self.movieListCollectionView.rx.modelSelected(Movie.self)
-      .bind(to: viewModel.inputs.modelSelected)
+    self.movieListCollectionView.rx.itemSelected
+      .bind { [weak self] in
+        guard let self = self else { return }
+        self.viewModel.inputs.itemSelected(index: $0.row)
+      }
       .disposed(by: self.disposeBag)
     
   }
@@ -119,7 +129,7 @@ final class MovieListViewController: BaseViewController {
     
     viewModel.outputs.movieDetail
       .subscribe(onNext : { [weak self] in
-        self?.movieDetail($0)
+        self?.movieDetail($0, $1)
       })
       .disposed(by: self.disposeBag)
     
@@ -141,9 +151,12 @@ final class MovieListViewController: BaseViewController {
     }
   }
   
-  private func movieDetail(_ movie: Movie) {
+  private func movieDetail(_ movie: Movie, _ index: Int) {
     let viewControlelr = appDelegate.container.resolve(MovieDetailViewController.self,
                                                        argument: movie)!
+    viewControlelr.didSelectItem = { [weak self] rating in
+      self?.viewModel.inputs.updateList(index: index, rating: rating)
+    }
     self.navigationController?.pushViewController(viewControlelr, animated: true)
   }
   
@@ -156,8 +169,8 @@ extension MovieListViewController: UICollectionViewDelegateFlowLayout {
   func collectionView(_ collectionView: UICollectionView,
                       layout collectionViewLayout: UICollectionViewLayout,
                       sizeForItemAt indexPath: IndexPath) -> CGSize {
-    return CGSize(width: (collectionView.bounds.size.width - 20),
-                  height: 150)
+    return CGSize(width: (collectionView.bounds.size.width - Metric.cellInset),
+                  height: Metric.cellHeight)
   }
   func collectionView(_ collectionView: UICollectionView,
                       layout collectionViewLayout: UICollectionViewLayout,

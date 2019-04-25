@@ -18,6 +18,7 @@ struct Movie: ModelType {
   var stillcut: String
   var nation: String
   var genre: String
+  var rating = Double(0)
   
   enum CodingKeys: String, CodingKey {
     case code = "code"
