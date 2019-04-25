@@ -1,0 +1,36 @@
+# Uncomment the next line to define a global platform for your project
+# platform :ios, '9.0'
+
+target 'WatchaExample' do
+  # Comment the next line if you're not using Swift and don't want to use dynamic frameworks
+  use_frameworks!
+
+  # Pods for WatchaExample
+
+  # Rx
+  pod 'RxSwift'
+  pod 'RxCocoa'
+  pod 'RxDataSources'
+
+  # UI
+  pod 'SnapKit'
+  pod 'Toaster'
+  pod 'Cosmos', '~> 18.0'
+
+  # Networking
+  pod 'Kingfisher'
+
+  # Logging
+  pod 'CocoaLumberjack/Swift'
+
+  # Misc.
+  pod 'ReusableKit'
+  pod 'Then'
+  pod 'Swinject'
+
+  target 'WatchaExampleTests' do
+    inherit! :search_paths
+    # Pods for testing
+  end
+
+end
