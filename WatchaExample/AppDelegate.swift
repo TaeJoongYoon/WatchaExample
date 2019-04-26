@@ -8,9 +8,6 @@
 
 import UIKit
 
-import Swinject
-import Toaster
-
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 

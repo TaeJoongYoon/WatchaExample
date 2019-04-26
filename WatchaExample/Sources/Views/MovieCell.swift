@@ -7,7 +7,6 @@
 //
 
 import Cosmos
-import Kingfisher
 import RxCocoa
 import RxSwift
 

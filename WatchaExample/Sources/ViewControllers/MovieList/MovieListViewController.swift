@@ -9,8 +9,6 @@
 import ReusableKit
 import RxCocoa
 import RxSwift
-import SnapKit
-import Then
 
 final class MovieListViewController: BaseViewController {
   
