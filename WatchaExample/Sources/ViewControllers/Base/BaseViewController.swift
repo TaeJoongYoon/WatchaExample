@@ -21,11 +21,7 @@ class BaseViewController: UIViewController {
   lazy private(set) var className: String = {
     return type(of: self).description().components(separatedBy: ".").last ?? ""
   }()
-  
-  var appDelegate: AppDelegate {
-    return UIApplication.shared.delegate as! AppDelegate
-  }
-  
+
   var automaticallyAdjustsLeftBarButtonItem = true
   
   /// There is a bug when trying to go back to previous view controller in a navigation controller

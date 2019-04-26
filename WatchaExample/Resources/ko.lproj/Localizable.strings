@@ -7,7 +7,10 @@
 */
 
 "WATCHA PLAY" = "왓챠 플레이";
-"Predict" = "예상";
-"Average" = "평균";
+"PREDICT" = "예상";
+"AVERAGE" = "평균";
 "I Wanna Watch" = "보고싶어요";
 "Applied Your Rating!" = "평가가 반영되었습니다!";
+"I Don't Like It" = "관심없어요";
+"More" = "더보기";
+"Cancel" = "취소";

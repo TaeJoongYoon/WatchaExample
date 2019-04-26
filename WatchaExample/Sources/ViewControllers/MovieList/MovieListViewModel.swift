@@ -12,14 +12,16 @@ import RxSwift
 protocol MovieListViewModelInputs {
   var viewDidLoad: PublishSubject<Void> { get }
   var didPulltoRefresh: PublishSubject<Void> { get }
-  func itemSelected(index: Int)
+  func itemSelected(index: Int, rating: Double)
   func updateList(index: Int, rating: Double)
+  var cellMoreButtonDidTapped: PublishSubject<Void> { get }
 }
 
 protocol MovieListViewModelOutputs {
   var isPending: Driver<Bool> { get }
   var movieList: BehaviorRelay<[Movie]> { get }
   var movieDetail: Observable<(Movie, Int)> { get }
+  var showMoreAlert: Driver<Void> { get }
 }
 
 protocol MovieListViewModelType: ViewModelType {
@@ -36,21 +38,28 @@ final class MovieListViewModel: MovieListViewModelType, MovieListViewModelInputs
   
   let viewDidLoad = PublishSubject<Void>()
   let didPulltoRefresh = PublishSubject<Void>()
+  
   private let _movieDetail = ReplaySubject<(Movie, Int)>.create(bufferSize: 1)
-  func itemSelected(index: Int) {
-    self._movieDetail.onNext((self.movieList.value[index], index))
+  func itemSelected(index: Int, rating: Double) {
+    var item = self.movieList.value[index]
+    item.rating = rating
+    self._movieDetail.onNext((item, index))
   }
+  
   func updateList(index: Int, rating: Double) {
     var newList = self.movieList.value
     newList[index].rating = rating
     self.movieList.accept(newList)
   }
   
+  let cellMoreButtonDidTapped = PublishSubject<Void>()
+  
   // MARK: Output
   
   let isPending: Driver<Bool>
   let movieList = BehaviorRelay<[Movie]>(value: [])
   let movieDetail: Observable<(Movie, Int)>
+  let showMoreAlert: Driver<Void>
   
   // MARK: Initialize
   
@@ -70,5 +79,9 @@ final class MovieListViewModel: MovieListViewModelType, MovieListViewModelInputs
     
     movieDetail = _movieDetail
       .asObservable()
+    
+    showMoreAlert = cellMoreButtonDidTapped
+      .asDriver(onErrorJustReturn: ())
+    
   }
 }

@@ -31,6 +31,7 @@ final class MovieListViewController: BaseViewController {
   // MARK: Properties
   
   var viewModel: MovieListViewModelType!
+  var movieDetailViewControllerFactory: (Movie) -> MovieDetailViewController
   
   // MARK: UI
   
@@ -51,8 +52,12 @@ final class MovieListViewController: BaseViewController {
   
   // MARK: Initialize
   
-  init(viewModel: MovieListViewModelType) {
+  init(
+    viewModel: MovieListViewModelType,
+    movieDetailViewControllerFactory: @escaping (Movie) -> MovieDetailViewController
+    ) {
     self.viewModel = viewModel
+    self.movieDetailViewControllerFactory = movieDetailViewControllerFactory
     super.init()
   }
   
@@ -105,7 +110,8 @@ final class MovieListViewController: BaseViewController {
     self.movieListCollectionView.rx.itemSelected
       .bind { [weak self] in
         guard let self = self else { return }
-        self.viewModel.inputs.itemSelected(index: $0.row)
+        let cell = self.movieListCollectionView.cellForItem(at: $0) as! MovieCell
+        self.viewModel.inputs.itemSelected(index: $0.row, rating: cell.rating())
       }
       .disposed(by: self.disposeBag)
     
@@ -123,9 +129,11 @@ final class MovieListViewController: BaseViewController {
       .bind(to: self.movieListCollectionView.rx.items(
         cellIdentifier: Reusable.movieCell.identifier,
         cellType: MovieCell.self)
-      ) { row, element, cell in
-        cell.configure(with: element)
-      }.disposed(by: self.disposeBag)
+      ) { [weak self] row, element, cell in
+        guard let self = self else { return }
+        cell.configure(with: element, self.viewModel)
+      }
+      .disposed(by: self.disposeBag)
     
     viewModel.outputs.movieDetail
       .subscribe(onNext : { [weak self] in
@@ -136,6 +144,11 @@ final class MovieListViewController: BaseViewController {
     viewModel.outputs.isPending
       .drive(onNext: { [weak self] isPending in
         self?.showPendingAnimation(isPending)
+      }).disposed(by: self.disposeBag)
+    
+    viewModel.outputs.showMoreAlert
+      .drive(onNext: { [weak self] in
+        self?.showMoreAlert()
       }).disposed(by: self.disposeBag)
     
   }
@@ -152,12 +165,27 @@ final class MovieListViewController: BaseViewController {
   }
   
   private func movieDetail(_ movie: Movie, _ index: Int) {
-    let viewControlelr = appDelegate.container.resolve(MovieDetailViewController.self,
-                                                       argument: movie)!
-    viewControlelr.didSelectItem = { [weak self] rating in
+    let viewController = self.movieDetailViewControllerFactory(movie)
+    viewController.didSelectItem = { [weak self] rating in
       self?.viewModel.inputs.updateList(index: index, rating: rating)
     }
-    self.navigationController?.pushViewController(viewControlelr, animated: true)
+    self.navigationController?.pushViewController(viewController, animated: true)
+  }
+  
+  private func showMoreAlert() {
+    let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+    
+    let moreButton = UIAlertAction(title: "More".localized, style: .default, handler: nil)
+    let wannaButton = UIAlertAction(title: "I Wanna Watch".localized, style: .default, handler: nil)
+    let dontLikeButton = UIAlertAction(title: "I don't like it".localized, style: .default, handler: nil)
+    let cancelButton = UIAlertAction(title: "Cancel".localized, style: .cancel, handler: nil)
+    
+    alertController.addAction(moreButton)
+    alertController.addAction(wannaButton)
+    alertController.addAction(dontLikeButton)
+    alertController.addAction(cancelButton)
+    
+    self.present(alertController, animated: true, completion: nil)
   }
   
 }

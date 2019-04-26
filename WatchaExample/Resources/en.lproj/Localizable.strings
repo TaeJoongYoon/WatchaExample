@@ -7,7 +7,10 @@
 */
 
 "WATCHA PLAY" = "WATCHA PLAY";
-"Predict" = "Predict";
-"Average" = "Average";
+"PREDICT" = "PREDICT";
+"AVERAGE" = "AVERAGE";
 "I Wanna Watch" = "I Wanna Watch";
 "Applied Your Rating!" = "Applied Your Rating!";
+"I Don't Like It" = "I Don't Like It";
+"More" = "More";
+"Cancel" = "Cancel";

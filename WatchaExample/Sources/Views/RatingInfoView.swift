@@ -20,8 +20,9 @@ final class RatingInfoView: UIView {
   
   // MARK: UI
   
-  lazy var predictedLabel: UILabel = {
+  lazy var titleLabel: UILabel = {
     let titleLabel = UILabel(frame: .zero)
+    titleLabel.translatesAutoresizingMaskIntoConstraints = false
     titleLabel.font = titleLabel.font.withSize(Metric.fontSize)
     
     return titleLabel
@@ -35,14 +36,15 @@ final class RatingInfoView: UIView {
   }()
   
   lazy var ratingLabel: UILabel = {
-    let infoLabel = UILabel(frame: .zero)
-    infoLabel.font = infoLabel.font.withSize(Metric.fontSize)
+    let ratingLabel = UILabel(frame: .zero)
+    ratingLabel.translatesAutoresizingMaskIntoConstraints = false
+    ratingLabel.font = ratingLabel.font.withSize(Metric.fontSize)
     
-    return infoLabel
+    return ratingLabel
   }()
   
   lazy var stackView: UIStackView = {
-    let stackView = UIStackView(arrangedSubviews: [predictedLabel, ratingImageView, ratingLabel])
+    let stackView = UIStackView(arrangedSubviews: [titleLabel, ratingImageView, ratingLabel])
     stackView.translatesAutoresizingMaskIntoConstraints = false
     stackView.axis = .horizontal
     stackView.spacing = Metric.spacing
@@ -70,7 +72,6 @@ final class RatingInfoView: UIView {
   
   private func setupView() {
     translatesAutoresizingMaskIntoConstraints = false
-    
     addSubview(self.stackView)
     setupContent()
     setupConstraints()
@@ -80,11 +81,21 @@ final class RatingInfoView: UIView {
   
   private func setupConstraints() {
     NSLayoutConstraint.activate([
+      // stackView
       stackView.leftAnchor.constraint(equalTo: leftAnchor),
       stackView.rightAnchor.constraint(equalTo: rightAnchor),
       stackView.centerXAnchor.constraint(equalTo: centerXAnchor),
       stackView.centerYAnchor.constraint(equalTo: centerYAnchor),
+      
+      // titleLabel
+      titleLabel.topAnchor.constraint(equalTo: stackView.topAnchor),
+      titleLabel.bottomAnchor.constraint(equalTo: stackView.bottomAnchor),
+      
+      // infoLabel
+      ratingLabel.topAnchor.constraint(equalTo: stackView.topAnchor),
+      ratingLabel.bottomAnchor.constraint(equalTo: stackView.bottomAnchor),
   
+      // ratingImageView
       ratingImageView.widthAnchor.constraint(equalToConstant: 10),
       ratingImageView.heightAnchor.constraint(equalToConstant: 10)
       ])
@@ -99,20 +110,24 @@ final class RatingInfoView: UIView {
     switch self.type {
     case .predict:
       color = .tintColor
-      title = "Predict".localized
+      title = "PREDICT".localized
       image = UIImage(named: "little-tint-star")
     case .average:
       color = .gray
-      title = "Average".localized
+      title = "AVERAGE".localized
       image = UIImage(named: "little-black-star")
     }
     
-    self.predictedLabel.text = title
-    self.predictedLabel.textColor = color
+    self.titleLabel.text = title
+    self.titleLabel.textColor = color
     
     self.ratingImageView.image = image
     
-    self.ratingLabel.text = title
+    self.ratingLabel.text = "0.0"
     self.ratingLabel.textColor = color
+  }
+  
+  func setRating(_ rating: Double) {
+    self.ratingLabel.text = String(format: "%.1f", rating)
   }
 }

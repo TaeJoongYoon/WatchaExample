@@ -29,6 +29,7 @@ final class MovieDetailViewController: BaseViewController {
   var movie: Movie
   var viewModel: MovieDetailViewModelType
   var didSelectItem: ((Double) -> Void)?
+  var toast: Toast?
   
   // MARK: UI
   
@@ -93,6 +94,9 @@ final class MovieDetailViewController: BaseViewController {
     self.rating.rating = self.movie.rating
     
     self.movieInfoContainerView.setupContent(with: self.movie)
+    self.predictContainerView.setRating(self.movie.rating)
+    self.averageContainerView.setRating(self.movie.rating)
+    
     self.view.addSubview(self.movieInfoContainerView)
     
     self.infoContainerView.addSubview(self.predictContainerView)
@@ -108,6 +112,11 @@ final class MovieDetailViewController: BaseViewController {
     super.viewDidLayoutSubviews()
     
     self.infoContainerView.layer.addBorder([.bottom], color: .lightGray, width: Metric.borderWidth)
+  }
+  
+  override func viewWillDisappear(_ animated: Bool) {
+    super.viewWillDisappear(animated)
+    self.toast?.cancel()
   }
   
   // MARK: Setup Constraints
@@ -131,13 +140,11 @@ final class MovieDetailViewController: BaseViewController {
     }
     
     self.predictContainerView.snp.makeConstraints { make in
-      make.top.bottom.equalToSuperview()
       make.left.equalToSuperview().offset(Metric.offset)
       make.centerY.equalToSuperview()
     }
     
     self.averageContainerView.snp.makeConstraints { make in
-      make.top.bottom.equalToSuperview()
       make.left.equalTo(self.predictContainerView.snp.right).offset(Metric.offset)
       make.centerY.equalToSuperview()
     }
@@ -159,10 +166,15 @@ final class MovieDetailViewController: BaseViewController {
   
   override func bindingEvent() {
     
+    self.shareButton.rx.tap
+      .debounce(0.3, scheduler: MainScheduler.instance)
+      .bind(to: viewModel.inputs.shareButtonDidTapped)
+      .disposed(by: self.disposeBag)
+    
     self.ratingButton.rx.tap
       .debounce(0.3, scheduler: MainScheduler.instance)
       .map { [weak self] in
-        guard let self = self else { return 0 }
+        guard let self = self else { return 0.0 }
         return self.rating.rating
       }
       .bind(to: viewModel.inputs.ratingButtonDidTapped)
@@ -174,9 +186,15 @@ final class MovieDetailViewController: BaseViewController {
   
   override func bindingUI() {
     
+    viewModel.outputs.share
+      .drive(onNext: { [weak self] in
+        self?.share()
+      })
+      .disposed(by: self.disposeBag)
+    
     viewModel.outputs.rated
-      .drive(onNext: {
-        self.rated($0)
+      .drive(onNext: { [weak self] in
+        self?.rated($0)
       })
       .disposed(by: self.disposeBag)
     
@@ -184,9 +202,24 @@ final class MovieDetailViewController: BaseViewController {
   
   // MARK: Action Handler
   
+  private func share() {
+    let item = "JUST WATCHA \(self.movie.title)"
+    let items = [item]
+    let activityViewController = UIActivityViewController(activityItems: items,
+                                                          applicationActivities: nil)
+    activityViewController.excludedActivityTypes = [ UIActivity.ActivityType.airDrop ]
+    
+    self.present(activityViewController, animated: true, completion: nil)
+  }
+  
   private func rated(_ rating: Double) {
     self.didSelectItem?(rating)
     
-    Toast(text: "Applied Your Rating!".localized, duration: Delay.long).show()
+    self.predictContainerView.setRating(rating)
+    self.averageContainerView.setRating(rating)
+    
+    self.toast?.cancel()
+    self.toast = Toast(text: "Applied Your Rating!".localized, duration: Delay.long)
+    self.toast?.show()
   }
 }

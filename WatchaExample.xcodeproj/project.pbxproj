@@ -29,6 +29,8 @@
 		6F4C416B2271C21D0039B4C9 /* RatingInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4C416A2271C21D0039B4C9 /* RatingInfoView.swift */; };
 		6F4C416E2271C40F0039B4C9 /* RatingInfoType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4C416D2271C40F0039B4C9 /* RatingInfoType.swift */; };
 		6F4C41702271C7F40039B4C9 /* CALayer+Border.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4C416F2271C7F40039B4C9 /* CALayer+Border.swift */; };
+		6F4C41722272E86D0039B4C9 /* BaseCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4C41712272E86D0039B4C9 /* BaseCollectionViewCell.swift */; };
+		6F4C41742272F08E0039B4C9 /* CompositionRoot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F4C41732272F08E0039B4C9 /* CompositionRoot.swift */; };
 		6F81A4A822717B3D0026BB0E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F81A4A722717B3D0026BB0E /* AppDelegate.swift */; };
 		6F81A4AD22717B3D0026BB0E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6F81A4AB22717B3D0026BB0E /* Main.storyboard */; };
 		6F81A4AF22717B3D0026BB0E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6F81A4AE22717B3D0026BB0E /* Assets.xcassets */; };
@@ -74,6 +76,8 @@
 		6F4C416A2271C21D0039B4C9 /* RatingInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingInfoView.swift; sourceTree = "<group>"; };
 		6F4C416D2271C40F0039B4C9 /* RatingInfoType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingInfoType.swift; sourceTree = "<group>"; };
 		6F4C416F2271C7F40039B4C9 /* CALayer+Border.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CALayer+Border.swift"; sourceTree = "<group>"; };
+		6F4C41712272E86D0039B4C9 /* BaseCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseCollectionViewCell.swift; sourceTree = "<group>"; };
+		6F4C41732272F08E0039B4C9 /* CompositionRoot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompositionRoot.swift; sourceTree = "<group>"; };
 		6F81A4A422717B3D0026BB0E /* WatchaExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WatchaExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F81A4A722717B3D0026BB0E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6F81A4AC22717B3D0026BB0E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -157,6 +161,7 @@
 		6F4C413122717C6E0039B4C9 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				6F4C41712272E86D0039B4C9 /* BaseCollectionViewCell.swift */,
 				6F4C414522717D350039B4C9 /* MovieCell.swift */,
 				6F4C41662271AA430039B4C9 /* MovieInfoContainerView.swift */,
 				6F4C416A2271C21D0039B4C9 /* RatingInfoView.swift */,
@@ -274,6 +279,7 @@
 				6F4C412F22717C580039B4C9 /* Resources */,
 				6F4C412E22717C440039B4C9 /* Supporting Files */,
 				6F81A4A722717B3D0026BB0E /* AppDelegate.swift */,
+				6F4C41732272F08E0039B4C9 /* CompositionRoot.swift */,
 			);
 			path = WatchaExample;
 			sourceTree = "<group>";
@@ -488,6 +494,7 @@
 				6F4C413E22717CE70039B4C9 /* Reactive+UIViewController.swift in Sources */,
 				6F4C414B22717D660039B4C9 /* BaseViewController.swift in Sources */,
 				6F4C413C22717CD70039B4C9 /* UIColor+BaseColor.swift in Sources */,
+				6F4C41742272F08E0039B4C9 /* CompositionRoot.swift in Sources */,
 				6F4C414022717D080039B4C9 /* ModelType.swift in Sources */,
 				6F4C413822717C9F0039B4C9 /* Logger.swift in Sources */,
 				6F4C41702271C7F40039B4C9 /* CALayer+Border.swift in Sources */,
@@ -497,6 +504,7 @@
 				6F4C415122717DB60039B4C9 /* MovieListViewController.swift in Sources */,
 				6F4C415522717DC90039B4C9 /* MovieDetailViewController.swift in Sources */,
 				6F81A4A822717B3D0026BB0E /* AppDelegate.swift in Sources */,
+				6F4C41722272E86D0039B4C9 /* BaseCollectionViewCell.swift in Sources */,
 				6F4C415722717DD20039B4C9 /* MovieDetailViewModel.swift in Sources */,
 				6F4C414F22717D9F0039B4C9 /* ViewModelType.swift in Sources */,
 				6F4C415322717DBF0039B4C9 /* MovieListViewModel.swift in Sources */,

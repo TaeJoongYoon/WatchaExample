@@ -6,12 +6,12 @@
 //  Copyright © 2019 Tae joong Yoon. All rights reserved.
 //
 
-import UIKit
-
 import Cosmos
 import Kingfisher
+import RxCocoa
+import RxSwift
 
-final class MovieCell: UICollectionViewCell {
+final class MovieCell: BaseCollectionViewCell {
   
   // MARK: Constant
   
@@ -40,7 +40,7 @@ final class MovieCell: UICollectionViewCell {
     $0.font = $0.font.withSize(Metric.infoFontSize)
   }
   
-  private let rating = CosmosView(frame: .zero).then {
+  private let ratingView = CosmosView(frame: .zero).then {
     $0.rating = 0
     $0.settings.starSize = Metric.starSize
     $0.settings.updateOnTouch = true
@@ -68,18 +68,6 @@ final class MovieCell: UICollectionViewCell {
     setupConstraints()
   }
   
-  required init?(coder aDecoder: NSCoder) {
-    super.init(coder: aDecoder)
-    
-    fatalError("Interface Builder is not supported!")
-  }
-  
-  override func awakeFromNib() {
-    super.awakeFromNib()
-    
-    fatalError("Interface Builder is not supported!")
-  }
-  
   // MARK: Setup UI
   
   private func setupUI() {
@@ -88,7 +76,7 @@ final class MovieCell: UICollectionViewCell {
     self.contentView.addSubview(self.posterImageView)
     self.contentView.addSubview(self.titleLabel)
     self.contentView.addSubview(self.infoLabel)
-    self.contentView.addSubview(self.rating)
+    self.contentView.addSubview(self.ratingView)
     self.contentView.addSubview(self.moreButton)
     self.contentView.addSubview(self.separatorLine)
   }
@@ -114,7 +102,7 @@ final class MovieCell: UICollectionViewCell {
       make.left.equalTo(self.posterImageView.snp.right).offset(Metric.defaultOffset)
     }
     
-    self.rating.snp.makeConstraints { make in
+    self.ratingView.snp.makeConstraints { make in
       make.bottom.equalTo(self.posterImageView.snp.bottom)
       make.left.equalTo(self.posterImageView.snp.right).offset(Metric.defaultOffset)
     }
@@ -134,10 +122,20 @@ final class MovieCell: UICollectionViewCell {
   
   // MARK: - Cell Contents
   
-  func configure(with movie: Movie) {
+  func configure(with movie: Movie, _ viewModel: MovieListViewModelType) {
     self.posterImageView.kf.setImage(with: URL(string: movie.poster))
     self.titleLabel.text = movie.title
     self.infoLabel.text = "\(movie.year)ㆍ\(movie.genre)"
-    self.rating.rating = movie.rating
+    self.ratingView.rating = movie.rating
+    
+    self.moreButton.rx.tap
+      .debounce(0.3, scheduler: MainScheduler.instance)
+      .bind(to: viewModel.inputs.cellMoreButtonDidTapped)
+      .disposed(by: self.disposeBag)
   }
+  
+  func rating() -> Double {
+    return self.ratingView.rating
+  }
+  
 }
